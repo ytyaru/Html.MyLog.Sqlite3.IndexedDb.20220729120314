@@ -1,7 +1,7 @@
 class TextToHtml {
     static now = new Date()
     static toHtml(id, content, created) {
-        return `<a id="${id}"></a><p>${this.br(this.autoLink(content))}<br>${this.#toTime(created)}${this.#toDeleteCheckbox(id)}<a href="#${id}">🔗</a><mpurse-send-button></mpurse-send-button></p>`
+        return `<a id="${id}" class="anchor"></a><div class="mylog"><p>${this.br(this.autoLink(content))}</p><div class="mylog-meta">${this.#toTime(created)}${this.#toDeleteCheckbox(id)}<a href="#${id}">🔗</a><mpurse-send-button></mpurse-send-button></div></div>`
     }
     static #toTime(created) {
         const d = new Date(created * 1000)
