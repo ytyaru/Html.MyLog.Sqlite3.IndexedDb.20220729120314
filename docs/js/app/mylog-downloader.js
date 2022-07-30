@@ -15,17 +15,21 @@ class MyLogDownloader {
         //this.zip.file(`mylog/mylog.db`, await this.#makeDb())
         //this.zip.file(`mylog/index.html`, this.#getIndex())
         //this.zip.file(`mylog/server.sh`, await this.#getCode(`server.sh`))
-        this.zip.file(`mylog/server.sh`, await this.#getCode(`server.sh`), {unixPermissions: "755"})
-        this.zip.file(`mylog/run_server.py`, await this.#getCode(`run_server.py`))
         this.zip.file(`mylog/index.html`, new TextEncoder().encode(await this.#getIndex()))
         this.zip.file(`mylog/css/style.css`, await this.#getStyle())
         this.zip.file(`mylog/js/main.js`, new TextEncoder().encode(this.#getMain()))
-        this.zip.file(`mylog/lib/toastify/1.11.2/min.js`, await this.#getCode(`lib/toastify/1.11.2/min.js`))
-        this.zip.file(`mylog/lib/toastify/1.11.2/min.css`, await this.#getCode(`lib/toastify/1.11.2/min.css`))
-        this.zip.file(`mylog/lib/party/party.min.js`, await this.#getCode(`lib/party/party.min.js`))
-        this.zip.file(`mylog/js/monacoin/mpurse-send-button.js`, await this.#getCode(`js/mpurse-send-button.js`))
-        this.zip.file(`mylog/js/monacoin/party-sparkle-image.js`, await this.#getCode(`js/party-sparkle-image.js`))
-        this.zip.file(`mylog/js/monacoin/party-sparkle-hart.js`, await this.#getCode(`js/party-sparkle-hart.js`))
+        if (window.mpurse) {
+            const code = await this.#getCode(`js/mpurse-send-button.js`)
+            const address = await window.mpurse.getAddress()
+            this.zip.file(`mylog/server.sh`, await this.#getCode(`server.sh`), {unixPermissions: "755"})
+            this.zip.file(`mylog/run_server.py`, await this.#getCode(`run_server.py`))
+            this.zip.file(`mylog/lib/toastify/1.11.2/min.js`, await this.#getCode(`lib/toastify/1.11.2/min.js`))
+            this.zip.file(`mylog/lib/toastify/1.11.2/min.css`, await this.#getCode(`lib/toastify/1.11.2/min.css`))
+            this.zip.file(`mylog/lib/party/party.min.js`, await this.#getCode(`lib/party/party.min.js`))
+            this.zip.file(`mylog/js/monacoin/mpurse-send-button.js`, code.replace(/MEHCqJbgiNERCH3bRAtNSSD9uxPViEX1nu/g, address))
+            this.zip.file(`mylog/js/monacoin/party-sparkle-image.js`, await this.#getCode(`js/party-sparkle-image.js`))
+            this.zip.file(`mylog/js/monacoin/party-sparkle-hart.js`, await this.#getCode(`js/party-sparkle-hart.js`))
+        }
         this.zip.file(`mylog/test.txt`, `日本語UTF8`)
         //this.#makeHtmlFiles(files)
         //await Promise.all([this.#makeHtmlFiles(), this.#makeJsFiles(), this.#makeImageFiles()])
@@ -46,18 +50,20 @@ class MyLogDownloader {
     }
     async #getIndex() {
         //return 'data:text/plain;charset=utf-8,' + encodeURI(
+        const libs = (window.mpurse) ? `<link rel="stylesheet" href="lib/toastify/1.11.2/min.css">
+<script src="lib/toastify/1.11.2/min.js"></script>
+<script src="lib/party/party.min.js"></script>
+<script src="js/monacoin/mpurse-send-button.js"></script>
+<script src="js/monacoin/party-sparkle-image.js"></script>
+<script src="js/monacoin/party-sparkle-hart.js"></script>
+` : ''
         return `<!doctype html>
 <html>
 <head>
 <meta charset="utf-8">
 <title>つぶやき</title>
 <link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="lib/toastify/1.11.2/min.css">
-<script src="lib/toastify/1.11.2/min.js"></script>
-<script src="lib/party/party.min.js"></script>
-<script src="js/monacoin/mpurse-send-button.js"></script>
-<script src="js/monacoin/party-sparkle-image.js"></script>
-<script src="js/monacoin/party-sparkle-hart.js"></script>
+${libs}
 <script src="js/main.js"></script>
 </head>
 <body>
