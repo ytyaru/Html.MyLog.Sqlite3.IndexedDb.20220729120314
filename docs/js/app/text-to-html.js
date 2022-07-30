@@ -1,13 +1,13 @@
 class TextToHtml {
     static now = new Date()
-    static toHtml(id, content, created) {
-        return `<a id="${id}" class="anchor"></a><div class="mylog"><p>${this.br(this.autoLink(content))}</p><div class="mylog-meta">${this.#toTime(created)}${this.#toDeleteCheckbox(id)}<a href="#${id}">🔗</a><mpurse-send-button></mpurse-send-button></div></div>`
+    static toHtml(id, content, created, isFixedHtml=false) {
+        return `<a id="${id}" class="anchor"></a><div class="mylog"><p>${this.br(this.autoLink(content))}</p><div class="mylog-meta">${this.#toTime(created, isFixedHtml)}${(isFixedHtml) ? '' : this.#toDeleteCheckbox(id)}<a href="#${id}">🔗</a><mpurse-send-button></mpurse-send-button></div></div>`
     }
-    static #toTime(created) {
+    static #toTime(created, isFixedHtml=false) {
         const d = new Date(created * 1000)
         const u = d.toISOString()
         //const l = d.toLocaleString({ timeZone: 'Asia/Tokyo' }).replace(/\//g, '-')
-        const l = this.#toElapsedTime(created)
+        const l = (isFixedHtml) ? d.toLocaleString({ timeZone: 'Asia/Tokyo' }).replace(/\//g, '-') : this.#toElapsedTime(created)
         return `<time datetime="${u}" title="${u}">${l}</time>`
     }
     static #toElapsedTime(created) { // 年、月、日が現在と同じなら省略する
