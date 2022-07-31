@@ -1,7 +1,11 @@
 class TextToHtml {
     static now = new Date()
-    static toHtml(id, content, created, isFixedHtml=false) {
-        return `<a id="${id}" class="anchor"></a><div class="mylog"><p>${this.br(this.autoLink(content))}</p><div class="mylog-meta">${this.#toTime(created, isFixedHtml)}${(isFixedHtml) ? '' : this.#toDeleteCheckbox(id)}<a href="#${id}">🔗</a><mpurse-send-button></mpurse-send-button></div></div>`
+    static toHtml(id, content, created, address=null, isFixedHtml=false) {
+        return `<a id="${id}" class="anchor"></a><div class="mylog"><p>${this.br(this.autoLink(content))}</p><div class="mylog-meta">${this.#toTime(created, isFixedHtml)}${(isFixedHtml) ? '' : this.#toDeleteCheckbox(id)}<a href="#${id}">🔗</a>${this.#toMpurseButton(address)}</div></div>`
+    }
+    static #toMpurseButton(address=null) {
+        //const address = (window.mpurse) ? await window.mpurse.getAddress() : ''
+        return (address) ? `<mpurse-send-button to="${address}"></mpurse-send-button>` : ''
     }
     static #toTime(created, isFixedHtml=false) {
         const d = new Date(created * 1000)

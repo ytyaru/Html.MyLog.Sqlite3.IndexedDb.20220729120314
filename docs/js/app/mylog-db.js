@@ -30,15 +30,17 @@ class MyLogDb {
             created: now,
         })
         console.debug(id, content, now)
+        const address = (window.mpurse) ? await window.mpurse.getAddress() : null
         //return this.#insertHtml(id, content, now)
-        return TextToHtml.toHtml(id, content, now) 
+        return TextToHtml.toHtml(id, content, now, address) 
     }
     #insertHtml(id, content, created) { return `<p>${this.#toContent(content)}<br>${this.#toTime(created)}${this.#toDeleteCheckbox(id)}</p>` }
     async toHtml() {
         const cms = await this.dexie.comments.toArray()
         cms.sort((a,b)=>b.created - a.created)
         //return cms.map(c=>this.#insertHtml(c.id, c.content, c.created)).join('')
-        return cms.map(c=>TextToHtml.toHtml(c.id, c.content, c.created)).join('')
+        const address = (window.mpurse) ? await window.mpurse.getAddress() : null
+        return cms.map(c=>TextToHtml.toHtml(c.id, c.content, c.created, address)).join('')
     }
     #toTime(created) {
         const d = new Date(created * 1000)

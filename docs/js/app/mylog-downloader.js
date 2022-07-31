@@ -50,6 +50,9 @@ class MyLogDownloader {
     }
     async #getIndex() {
         //return 'data:text/plain;charset=utf-8,' + encodeURI(
+        const address = (window.mpurse) ? await window.mpurse.getAddress() : ''
+        let content = await this.#getContent()
+        if (window.mpurse) {content=content.replace(/ to="MEHCqJbgiNERCH3bRAtNSSD9uxPViEX1nu"/g, '')}
         const libs = (window.mpurse) ? `<link rel="stylesheet" href="lib/toastify/1.11.2/min.css">
 <script src="lib/toastify/1.11.2/min.js"></script>
 <script src="lib/party/party.min.js"></script>
@@ -67,7 +70,7 @@ ${libs}
 <script src="js/main.js"></script>
 </head>
 <body>
-${await this.#getContent()}
+${content}
 </body>
 </html>`
 //<div id="post-list"></div>
@@ -76,7 +79,9 @@ ${await this.#getContent()}
     async #getContent() {
         const cms = await this.db.dexie.comments.toArray()
         cms.sort((a,b)=>b.created - a.created)
-        return cms.map(c=>TextToHtml.toHtml(c.id, c.content, c.created, true)).join('')
+        //return cms.map(c=>TextToHtml.toHtml(c.id, c.content, c.created, true)).join('')
+        const address = (window.mpurse) ? await window.mpurse.getAddress() : null
+        return cms.map(c=>TextToHtml.toHtml(c.id, c.content, c.created, address, true)).join('')
     }
     async #getStyle() { return this.#getCode(`./css/styles.css`) }
     async #getCode(path) {
